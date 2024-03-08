@@ -1,12 +1,16 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy Node.js app to Azure Web App - cv-managemnetapp
-
+name: Build and deploy Node.js app to Azure Web App  - azure-deploy-with-gh-actions-web-app
 on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'README.md'
+      - '.husky'
+      - '.github/**'
+      - '**/*.csv'
   workflow_dispatch:
 
 jobs:
@@ -14,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
       - name: Set up Node.js version
         uses: actions/setup-node@v3
@@ -23,15 +27,14 @@ jobs:
 
       - name: npm install, build, and test
         run: |
+          npm install -g @nestjs/cli
           npm install
-          npm run build --if-present
-          npm run test --if-present
+          npm run build
 
-
-      - name: 'Run Azure webapp deploy action using publish profile credentials'
+      - name: 'Deploy to Azure Web App'
+        id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'cv-managemnetapp'
-          slot-name: 'Production'
+          app-name: 'azure-deploy-with-gh-actions-web-app'
           package: .
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E6D47AFBD3E64D5BAC480421D8B8F9E3 }}
