@@ -49,7 +49,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'nest-webapps'
+          app-name: 'CV-Gerenciamento-qa'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E6D47AFBD3E64D5BAC480421D8B8F9E3 }}
           package: dist
