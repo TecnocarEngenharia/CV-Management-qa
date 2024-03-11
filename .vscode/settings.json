@@ -72,9 +72,7 @@
   "explorer.confirmDragAndDrop": false,
   "terminal.integrated.fontSize": 14,
   "terminal.integrated.fontFamily": "monospace",
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
-  },
+
   "eslint.validate": [
     "javascript",
     "javascriptreact",
@@ -224,7 +222,7 @@
     "WEBPUSH"
   ],
   "workbench.colorTheme": "Min Dark",
-  "workbench.statusBar.visible": false,
+  "workbench.statusBar.visible": true,
   "appService.zipIgnorePattern": [
     "node_modules{,/**}",
     ".vscode{,/**}"
