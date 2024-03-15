@@ -47,7 +47,6 @@ export class User {
   updatedAt: Date;
 
   @BeforeInsert()
-  @BeforeUpdate()
   async passwordHash() {
     if (!this.password || this.password.trim() === '') {
       return;
