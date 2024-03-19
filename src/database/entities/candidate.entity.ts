@@ -112,34 +112,34 @@ export class Candidate {
   @Column({ nullable: false, type: 'varchar' })
   tipo_cnpj: string;
 
-  @Column({ nullable: false, type: 'varchar' })
+  @Column({ nullable: true, type: 'varchar' })
   vaga_100_presencial_porto_real_rj: string;
 
   @Column({ type: 'varchar', nullable: true })
   vaga_hibrida_porto_real_rj: string;
 
-  @Column({ nullable: false, type: 'varchar' })
+  @Column({ nullable: true, type: 'varchar' })
   vaga_100_presencial_goiana_pe: string;
 
   @Column({ type: 'varchar', nullable: true })
   vaga_hibrida_goiana_pe: string;
 
-  @Column({ nullable: false, type: 'varchar' })
+  @Column({ nullable: true, type: 'varchar' })
   vaga_100_presencial_betim_mg: string;
 
-  @Column({ nullable: false, type: 'varchar' })
+  @Column({ nullable: true, type: 'varchar' })
   vaga_hibrida_betim: string;
 
-  @Column({ nullable: false, type: 'varchar' })
+  @Column({ nullable: true, type: 'varchar' })
   vaga_100_presencial_sao_paulo: string;
 
   @Column({ type: 'varchar', nullable: true })
   vaga_hibrida_sao_paulo: string;
 
-  @Column({ nullable: false, type: 'varchar' })
+  @Column({ nullable: true, type: 'varchar' })
   vaga_internacional: string;
 
-  @Column({ nullable: false, type: 'varchar' })
+  @Column({ nullable: true, type: 'varchar' })
   home_office: string;
 
   @Column({ nullable: true, type: 'varchar' })
