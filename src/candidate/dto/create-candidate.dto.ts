@@ -104,14 +104,11 @@ export class CreateCandidateDto {
   @IsString()
   tipo_cnpj: string;
 
-
   @IsString()
   vaga_100_presencial_porto_real_rj: string;
 
-
   @IsString()
   vaga_100_presencial_goiana_pe: string;
-
 
   @IsString()
   vaga_100_presencial_betim_mg: string;
