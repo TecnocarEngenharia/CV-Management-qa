@@ -119,15 +119,12 @@ export class CreateCandidateDto {
   @IsString()
   vaga_100_presencial_sao_paulo: string;
 
-  @IsNotEmpty({ message: 'O campo vaga internacional não pode estar vazio' })
   @IsString()
   vaga_internacional: string;
 
-  @IsNotEmpty({ message: 'O campo vaga híbrida Betim não pode estar vazio' })
   @IsString()
   vaga_hibrida_betim: string;
 
-  @IsNotEmpty({ message: 'O campo home office não pode estar vazio' })
   @IsString()
   home_office: string;
 
