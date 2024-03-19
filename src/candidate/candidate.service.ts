@@ -111,7 +111,6 @@ export class CandidateService {
                 const observacao = capitalizedRow['Observação:'];
 
                 const esta_empregado = 'Não';
-                const vaga_hibrida_betim = 'Não';
 
                 const candidateData: CreateCandidateDto = {
                   profissional,
@@ -143,7 +142,6 @@ export class CandidateService {
                   vaga_internacional,
                   observacao,
                   esta_empregado,
-                  vaga_hibrida_betim,
                   genero: '',
                   resumoProfissional: '',
                   conhecimento_frances: '',

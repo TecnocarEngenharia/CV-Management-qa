@@ -123,9 +123,6 @@ export class CreateCandidateDto {
   vaga_internacional: string;
 
   @IsString()
-  vaga_hibrida_betim: string;
-
-  @IsString()
   home_office: string;
 
   @IsOptional()
