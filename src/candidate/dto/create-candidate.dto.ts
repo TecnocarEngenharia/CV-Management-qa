@@ -104,27 +104,18 @@ export class CreateCandidateDto {
   @IsString()
   tipo_cnpj: string;
 
-  @IsNotEmpty({
-    message: 'O campo vaga 100% presencial Porto Real RJ não pode estar vazio',
-  })
+
   @IsString()
   vaga_100_presencial_porto_real_rj: string;
 
-  @IsNotEmpty({
-    message: 'O campo vaga 100% presencial Goiana PE não pode estar vazio',
-  })
+
   @IsString()
   vaga_100_presencial_goiana_pe: string;
 
-  @IsNotEmpty({
-    message: 'O campo vaga 100% presencial Betim MG não pode estar vazio',
-  })
+
   @IsString()
   vaga_100_presencial_betim_mg: string;
 
-  @IsNotEmpty({
-    message: 'O campo vaga 100% presencial São Paulo SP não pode estar vazio',
-  })
   @IsString()
   vaga_100_presencial_sao_paulo: string;
 
