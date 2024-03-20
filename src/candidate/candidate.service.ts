@@ -146,7 +146,7 @@ export class CandidateService {
                   resumoProfissional: '',
                   conhecimento_frances: '',
                   conhecimento_italiano: '',
-                  conhecimento_espanhol: ''
+                  conhecimento_espanhol: '',
                 };
                 const candidate = await this.create(candidateData);
                 return { candidate, success: true };
@@ -191,17 +191,17 @@ export class CandidateService {
       const file = curriculo
         ? await this.uploadCv(
             curriculo,
-            curriculo.buffer, 
+            curriculo.buffer,
             createCandidateDto,
             codigoCandidate,
           )
-        : null; 
+        : null;
 
       const resultAge = calcularIdade(createCandidateDto.data_de_nascimento);
 
       const tempCandidate = this.candidateRepository.create({
         ...createCandidateDto,
-        curriculo: file, 
+        curriculo: file,
         idade: resultAge,
         codigoCandidate,
         observacao: observacaoDate,
@@ -211,7 +211,7 @@ export class CandidateService {
 
       return candidate;
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
       throw new HttpException(
         error.message || 'Erro interno no servidor',
         error.statusCode || 500,
@@ -265,130 +265,110 @@ export class CandidateService {
       };
 
       let whereConditions: any = {};
-      const queries: Promise<Candidate[]>[] = [];
 
-      if (query.foi_avaliado_recrutamento) {
-        whereConditions.foi_avaliado_recrutamento =
-          query.foi_avaliado_recrutamento;
+      if (!query) {
+        return [];
+      }
+
+      // Verifica e adiciona a consulta de UF
+      if (query.uf && typeof query.uf === 'string') {
+        const ufsPermitidas = ['SP', 'MG', 'RJ', 'PE'];
+        whereConditions.uf =
+          query.uf.toLowerCase() === 'outros'
+            ? Not(In(ufsPermitidas))
+            : In(query.uf.split(',').map((uf) => uf.trim()));
+      }
+
+      // Verifica e adiciona a consulta de nível de função
+      if (query.nivel_funcao && typeof query.nivel_funcao === 'string') {
+        const nivelFuncao = query.nivel_funcao.toLowerCase();
+        if (['júnior', 'pleno', 'senior'].includes(nivelFuncao)) {
+          whereConditions.nivel_funcao =
+            nivelFuncao.charAt(0).toUpperCase() + nivelFuncao.slice(1);
+        } else {
+          return [];
+        }
+      }
+
+      // Verifica e adiciona a consulta de tipo desejado do LinkedIn
+      if (
+        query.tipo_desejado_linkedin &&
+        typeof query.tipo_desejado_linkedin === 'string'
+      ) {
+        whereConditions.tipo_desejado_linkedin = query.tipo_desejado_linkedin;
+      }
+
+      // Verifica e adiciona a consulta de gênero
+      if (query.genero && typeof query.genero === 'string') {
+        whereConditions.genero = query.genero;
+      }
+
+      if (
+        query.modalidade_atual &&
+        typeof query.modalidade_atual === 'string'
+      ) {
+        whereConditions.modalidade_atual = query.modalidade_atual;
       }
 
       if (query) {
-        // Verifica e adiciona a consulta de UF
-        if (query.uf && typeof query.uf === 'string') {
-          if (query.uf.toLowerCase() === 'outros') {
-            whereConditions.uf = Not(In(['SP', 'MG', 'RJ', 'PE']));
+        if (
+          query.conhecimento_ingles &&
+          typeof query.conhecimento_ingles === 'string'
+        ) {
+          const niveisDeIngles = query.conhecimento_ingles
+            .split(',')
+            .map((nivel) => nivel.trim());
+
+          // Verifica se algum dos níveis de inglês está presente nos candidatos
+          const niveisEncontrados = niveisDeIngles.filter((nivel) =>
+            ['Avançado', 'Intermediário', 'Básico', 'Fluente'].includes(nivel),
+          );
+
+          if (niveisEncontrados.length > 0) {
+
+            whereConditions.conhecimento_ingles = In(niveisEncontrados);
           } else {
-            const ufSelected = query.uf.split(',').map((uf) => uf.trim());
-            whereConditions.uf = In(ufSelected);
+            return [];
           }
-        }
-
-        if (query) {
-          // Verifica e adiciona a consulta de nivel_funcao
-          if (query.nivel_funcao && typeof query.nivel_funcao === 'string') {
-            const nivelFuncao = query.nivel_funcao.toLowerCase();
-            if (nivelFuncao === 'júnior') {
-              // Se for junior, busca junior, senior e pleno
-              whereConditions.nivel_funcao = In(['Júnior', 'Senior', 'Pleno']);
-            } else if (nivelFuncao === 'pleno') {
-              // Se for senior, busca senior e pleno
-              whereConditions.nivel_funcao = In(['Senior', 'Pleno']);
-            } else if (nivelFuncao === 'senior') {
-              // Se for pleno, busca apenas pleno
-              whereConditions.nivel_funcao = 'Senior';
-            }
-          }
-          queries.push(
-            this.candidateRepository.find({
-              ...commonOptions,
-              where: whereConditions,
-            }),
-          );
-        }
-
-        if (query) {
-          if (
-            query.conhecimento_ingles &&
-            typeof query.conhecimento_ingles === 'string'
-          ) {
-            const niveisDeIngles = query.conhecimento_ingles
-              .split(',')
-              .map((nivel) => nivel.trim());
-            whereConditions.conhecimento_ingles = In(niveisDeIngles);
-          }
-        }
-
-        // Verifica e adiciona as consultas de pretensão salarial
-        if (query.minPretensaoSalarial && query.maxPretensaoSalarial) {
-          queries.push(
-            this.candidateRepository.find({
-              ...commonOptions,
-              where: {
-                pretensao_salarial: Between(
-                  Number(query.minPretensaoSalarial),
-                  Number(query.maxPretensaoSalarial),
-                ),
-                ...whereConditions,
-              },
-            }),
-          );
-        }
-
-        // Verifica e adiciona as consultas de pretensão PJ
-        if (query.minPretensaoPJ && query.maxPretensaoPJ) {
-          queries.push(
-            this.candidateRepository.find({
-              ...commonOptions,
-              where: {
-                pretensao_pj: Between(
-                  Number(query.minPretensaoPJ),
-                  Number(query.maxPretensaoPJ),
-                ),
-                ...whereConditions,
-              },
-            }),
-          );
-        }
-
-        // Se não houver outras consultas, adiciona a consulta com as condições
-        if (queries.length === 0) {
-          for (const key in query) {
-            if (query.hasOwnProperty(key) && query[key]) {
-              if (key === 'minIdade') {
-                whereConditions.idade = whereConditions.idade || {};
-                whereConditions.idade['$gte'] = Number(query.minIdade);
-              } else if (key === 'maxIdade') {
-                whereConditions.idade = whereConditions.idade || {};
-                whereConditions.idade['$lte'] = Number(query.maxIdade);
-              } else {
-                whereConditions[key] = query[key];
-              }
-            }
-          }
-          queries.push(
-            this.candidateRepository.find({
-              ...commonOptions,
-              where: whereConditions,
-            }),
-          );
         }
       }
 
-      // Aguarde todas as consultas serem resolvidas
-      const results = await Promise.all(queries);
+      if (query.minPretensaoSalarial && query.maxPretensaoSalarial) {
+        whereConditions.pretensao_salarial = Between(
+          Number(query.minPretensaoSalarial),
+          Number(query.maxPretensaoSalarial),
+        );
+      }
 
-      // Combine os resultados e remova duplicatas
-      const combinedResults = results.reduce(
-        (acc, curr) => acc.concat(curr),
-        [],
-      );
+      // Verifica e adiciona a consulta de pretensão PJ
+      if (query.minPretensaoPJ && query.maxPretensaoPJ) {
+        whereConditions.pretensao_pj = Between(
+          Number(query.minPretensaoPJ),
+          Number(query.maxPretensaoPJ),
+        );
+      }
+
+      // Verifica e adiciona a consulta de idade
+      if (query.minIdade || query.maxIdade) {
+        whereConditions.idade = {};
+        if (query.minIdade)
+          whereConditions.idade['$gte'] = Number(query.minIdade);
+        if (query.maxIdade)
+          whereConditions.idade['$lte'] = Number(query.maxIdade);
+      }
+
+      // Realiza a consulta
+      const results = await this.candidateRepository.find({
+        ...commonOptions,
+        where: whereConditions,
+      });
+
+      // Retorna os resultados únicos
       const uniqueResults = Array.from(
-        new Set(combinedResults.map((candidate) => candidate.id)),
+        new Set(results.map((candidate) => candidate.id)),
       ).map((candidateId) =>
-        combinedResults.find((candidate) => candidate.id === candidateId),
+        results.find((candidate) => candidate.id === candidateId),
       );
-
-      // Retorne os resultados únicos
       return uniqueResults;
     } catch (error) {
       console.error(
@@ -484,8 +464,8 @@ export class CandidateService {
       await this.candidateRepository.delete({ id });
 
       return {
-        message: "Candidato removido com sucesso!"
-      }
+        message: 'Candidato removido com sucesso!',
+      };
     } catch (error) {
       throw new HttpException(
         error.message || 'Internal server error',
