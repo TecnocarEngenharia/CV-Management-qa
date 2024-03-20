@@ -60,6 +60,15 @@ export class Candidate {
   @Column({ nullable: true, type: 'varchar' })
   empresa_atual: string;
 
+  @Column({ nullable: true, type: 'varchar' })
+  salario_atual: string;
+
+  @Column({ nullable: true, type: 'varchar' })
+  ultimo_salario: string;
+
+  @Column({ nullable: true, type: 'varchar' })
+  salario_hora: string;
+
   @Column({ nullable: false, type: 'varchar' })
   experiencia_ramo_automotivo: string;
 
