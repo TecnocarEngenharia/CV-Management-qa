@@ -247,13 +247,13 @@ export class CandidateService {
     }
   }
 
-  async findByCpf(cpf: string) {
+  async findByCpf(cpf: string): Promise<Candidate> {
     try {
-      return this.candidateRepository.findOneBy({ cpf });
+      return await this.candidateRepository.findOne({ where: { cpf } });
     } catch (error) {
       throw new HttpException(
-        error.message || 'Internal server error',
-        error.status || 500,
+        error.message || 'Erro interno no servidor',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -325,7 +325,6 @@ export class CandidateService {
           );
 
           if (niveisEncontrados.length > 0) {
-
             whereConditions.conhecimento_ingles = In(niveisEncontrados);
           } else {
             return [];

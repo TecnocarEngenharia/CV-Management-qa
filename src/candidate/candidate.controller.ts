@@ -11,6 +11,7 @@ import {
   HttpStatus,
   Query,
   Delete,
+  HttpException,
 } from '@nestjs/common';
 import { CandidateService } from './candidate.service';
 import { CreateCandidateDto } from './dto/create-candidate.dto';
@@ -69,6 +70,30 @@ export class CandidateController {
     return this.candidateService.findAll(query);
   }
 
+  @Get('cpf')
+  async findByCpf(@Query('cpf') cpf: string) {
+    try {
+      // Chama o método correspondente no serviço
+      const candidate = await this.candidateService.findByCpf(cpf);
+      if (!candidate) {
+        throw new NotFoundException(
+          'Candidato não encontrado para o CPF fornecido.',
+        );
+      }
+      return candidate;
+    } catch (error) {
+      // Lidar com erros
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new HttpException(
+          'Erro interno no servidor.',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.candidateService.findOne(+id);
@@ -113,12 +138,6 @@ export class CandidateController {
       }
     }
   }
-
-  // @Get('/skills/:skill')
-  // async getCandidatesBySkill(@Param('skill') skill: string) {
-  //   const candidates = await this.candidateService.findBySkill(skill);
-  //   return candidates;
-  // }
 
   @Patch(':id')
   update(
