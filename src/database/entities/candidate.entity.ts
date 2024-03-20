@@ -13,6 +13,7 @@ import {
 import { Experiencia } from '../../types/experiencias.types';
 import { Formacoes } from '../../types/formacoes.types';
 import { Cursos } from '../../types/cursos.types';
+import { TipoDesejadoLinkedin } from 'src/types/tipoDesejadoLinkedin.types';
 
 @Entity('candidates')
 export class Candidate {
@@ -75,8 +76,6 @@ export class Candidate {
   @Column({ nullable: false, type: 'varchar' })
   modalidade_atual: string;
 
-  @Column({ nullable: false, type: 'varchar' })
-  tipo_desejado_linkedin: string;
 
   @Column({ nullable: false, type: 'varchar' })
   nivel_funcao: string;
@@ -163,6 +162,10 @@ export class Candidate {
 
   @Column({ type: 'jsonb', nullable: true, default: () => "'[]'::jsonb" })
   Atividades: Atividades[];
+
+  
+  @Column({ type: 'jsonb', nullable: true, default: () => "'[]'::jsonb" })
+  tipo_desejado_linkedin: TipoDesejadoLinkedin[];
 
   @CreateDateColumn()
   createdAt: Date;

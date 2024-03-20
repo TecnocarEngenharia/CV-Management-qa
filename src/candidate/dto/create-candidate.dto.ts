@@ -54,9 +54,6 @@ export class CreateCandidateDto {
   @IsString()
   modalidade_atual: string;
 
-  @IsNotEmpty({ message: 'O campo Tipo desejado de vaga não pode estar vazio' })
-  @IsString()
-  tipo_desejado_linkedin: string;
 
   @IsNotEmpty({ message: 'O campo Nível da função não pode estar vazio' })
   @IsString()

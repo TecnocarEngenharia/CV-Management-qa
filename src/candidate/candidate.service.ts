@@ -123,7 +123,6 @@ export class CandidateService {
                   experiencia_ramo_automotivo,
                   modalidade_atual,
                   empresa_atual,
-                  tipo_desejado_linkedin,
                   nivel_funcao,
                   formacao,
                   interesse_imediato,
