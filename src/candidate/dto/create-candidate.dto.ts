@@ -44,15 +44,6 @@ export class CreateCandidateDto {
   @IsOptional()
   empresa_atual: string;
 
-  @IsOptional()
-  salario_atual: string;
-
-  @IsOptional()
-  ultimo_salario: string;
-
-  @IsOptional()
-  salario_hora: string;
-
   @IsNotEmpty({
     message: 'O campo Experiencia no ramo automotivo não pode estar vazio',
   })
