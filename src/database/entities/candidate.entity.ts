@@ -162,7 +162,7 @@ export class Candidate {
   @Column({ type: 'jsonb', nullable: true, default: () => "'[]'::jsonb" })
   Atividades: Atividades[];
 
-  @Column('text', { array: true, nullable: true })
+  @Column({ type: 'jsonb', nullable: true, default: () => "'[]'::jsonb" })
   tipo_desejado_linkedin: string[];
 
   @CreateDateColumn()
