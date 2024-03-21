@@ -262,13 +262,13 @@ export class CandidateService {
       const commonOptions = {
         relations: ['curriculo'],
       };
-
+  
       let whereConditions: any = {};
-
+  
       if (!query) {
         return [];
       }
-
+  
       // Verifica e adiciona a consulta de UF
       if (query.uf && typeof query.uf === 'string') {
         const ufsPermitidas = ['SP', 'MG', 'RJ', 'PE'];
@@ -277,7 +277,7 @@ export class CandidateService {
             ? Not(In(ufsPermitidas))
             : In(query.uf.split(',').map((uf) => uf.trim()));
       }
-
+  
       // Verifica e adiciona a consulta de nível de função
       if (query.nivel_funcao && typeof query.nivel_funcao === 'string') {
         const nivelFuncao = query.nivel_funcao.toLowerCase();
@@ -288,7 +288,7 @@ export class CandidateService {
           return [];
         }
       }
-
+  
       // Verifica e adiciona a consulta de tipo desejado do LinkedIn
       if (
         query.tipo_desejado_linkedin &&
@@ -296,53 +296,48 @@ export class CandidateService {
       ) {
         whereConditions.tipo_desejado_linkedin = query.tipo_desejado_linkedin;
       }
-
+  
       // Verifica e adiciona a consulta de gênero
       if (query.genero && typeof query.genero === 'string') {
         whereConditions.genero = query.genero;
       }
-
-      if (
-        query.modalidade_atual &&
-        typeof query.modalidade_atual === 'string'
-      ) {
+  
+      if (query.modalidade_atual && typeof query.modalidade_atual === 'string') {
         whereConditions.modalidade_atual = query.modalidade_atual;
       }
-
-      if (query) {
-        if (
-          query.conhecimento_ingles &&
-          typeof query.conhecimento_ingles === 'string'
-        ) {
-          const niveisDeIngles = query.conhecimento_ingles
-            .split(',')
-            .map((nivel) => nivel.trim());
-
-          // Verifica se algum dos níveis de inglês está presente nos candidatos
-          const niveisEncontrados = niveisDeIngles.filter((nivel) =>
-            ['Avançado', 'Intermediário', 'Básico', 'Fluente'].includes(nivel),
-          );
-
-          if (niveisEncontrados.length > 0) {
-            whereConditions.conhecimento_ingles = In(niveisEncontrados);
-          } else {
-            return [];
-          }
+  
+      if (
+        query.conhecimento_ingles &&
+        typeof query.conhecimento_ingles === 'string'
+      ) {
+        const niveisDeIngles = query.conhecimento_ingles
+          .split(',')
+          .map((nivel) => nivel.trim());
+  
+        // Verifica se algum dos níveis de inglês está presente nos candidatos
+        const niveisEncontrados = niveisDeIngles.filter((nivel) =>
+          ['Avançado', 'Intermediário', 'Básico', 'Fluente'].includes(nivel),
+        );
+  
+        if (niveisEncontrados.length > 0) {
+          whereConditions.conhecimento_ingles = In(niveisEncontrados);
+        } else {
+          return [];
         }
       }
-
-      if (query.minPretensaoSalarial && query.maxPretensaoSalarial) {
+  
+      // Verifica e adiciona a consulta de pretensão salarial
+      if (query.minPretensaoSalarial !== undefined && query.maxPretensaoSalarial !== undefined) {
         whereConditions.pretensao_salarial = Between(
           Number(query.minPretensaoSalarial),
           Number(query.maxPretensaoSalarial),
         );
       }
-
+  
       if (query.foi_avaliado_recrutamento) {
-        whereConditions.foi_avaliado_recrutamento =
-          query.foi_avaliado_recrutamento;
+        whereConditions.foi_avaliado_recrutamento = query.foi_avaliado_recrutamento;
       }
-
+  
       // Verifica e adiciona a consulta de pretensão PJ
       if (query.minPretensaoPJ && query.maxPretensaoPJ) {
         whereConditions.pretensao_pj = Between(
@@ -350,28 +345,35 @@ export class CandidateService {
           Number(query.maxPretensaoPJ),
         );
       }
-
+  
       // Verifica e adiciona a consulta de idade
-      if (query.minIdade || query.maxIdade) {
-        whereConditions.idade = {};
-        if (query.minIdade)
-          whereConditions.idade['$gte'] = Number(query.minIdade);
-        if (query.maxIdade)
-          whereConditions.idade['$lte'] = Number(query.maxIdade);
+      for (const key in query) {
+        if (query.hasOwnProperty(key) && query[key]) {
+          if (key === 'minIdade') {
+            whereConditions.idade = whereConditions.idade || {};
+            whereConditions.idade['$gte'] = Number(query.minIdade);
+          } else if (key === 'maxIdade') {
+            whereConditions.idade = whereConditions.idade || {};
+            whereConditions.idade['$lte'] = Number(query.maxIdade);
+          } else {
+            whereConditions[key] = query[key];
+          }
+        }
       }
-
+  
       // Realiza a consulta
       const results = await this.candidateRepository.find({
         ...commonOptions,
         where: whereConditions,
       });
-
+  
       // Retorna os resultados únicos
       const uniqueResults = Array.from(
         new Set(results.map((candidate) => candidate.id)),
       ).map((candidateId) =>
         results.find((candidate) => candidate.id === candidateId),
       );
+  
       return uniqueResults;
     } catch (error) {
       console.error(
