@@ -338,6 +338,11 @@ export class CandidateService {
         );
       }
 
+      if (query.foi_avaliado_recrutamento) {
+        whereConditions.foi_avaliado_recrutamento =
+          query.foi_avaliado_recrutamento;
+      }
+
       // Verifica e adiciona a consulta de pretensão PJ
       if (query.minPretensaoPJ && query.maxPretensaoPJ) {
         whereConditions.pretensao_pj = Between(
