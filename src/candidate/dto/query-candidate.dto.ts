@@ -24,7 +24,7 @@ export class QueryCandidateDto {
   empresa_atual?: string;
   experiencia_ramo_automotivo?: string;
   modalidade_atual?: string;
-  tipo_desejado_linkedin?: string;
+  tipo_desejado_linkedin?: string | string[];
   nivel_funcao?: string;
   formacao?: string;
   interesse_imediato?: string;

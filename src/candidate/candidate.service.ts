@@ -8,7 +8,7 @@ import {
 import { CreateCandidateDto } from './dto/create-candidate.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Candidate } from 'src/database/entities/candidate.entity';
-import { Between, In, Not, Repository } from 'typeorm';
+import { Between, In, Like, Not, Raw, Repository } from 'typeorm';
 import * as path from 'path';
 import { promises as fsPromises } from 'fs';
 import { FilesService } from 'src/files/files.service';
@@ -290,14 +290,22 @@ export class CandidateService {
         }
       }
 
-      // Verifica e adiciona a consulta de tipo desejado do LinkedIn
+      // Supondo que 'query' seja o objeto que contém os parâmetros da consulta HTTP
       if (
         query.tipo_desejado_linkedin &&
         typeof query.tipo_desejado_linkedin === 'string'
       ) {
-        whereConditions.tipo_desejado_linkedin = query.tipo_desejado_linkedin;
-      }
+        console.log(
+          "Parâmetro 'tipo_desejado_linkedin' recebido:",
+          query.tipo_desejado_linkedin,
+        );
 
+        // Construa a consulta para filtrar candidatos que contenham o valor desejado no array JSONB
+        whereConditions.tipo_desejado_linkedin = Raw(
+          (alias) =>
+            `${alias} @> '${JSON.stringify([query.tipo_desejado_linkedin])}'`,
+        );
+      }
       // Verifica e adiciona a consulta de gênero
       if (query.genero && typeof query.genero === 'string') {
         whereConditions.genero = query.genero;
@@ -370,7 +378,7 @@ export class CandidateService {
         const maxAge = Number(query.maxIdade);
 
         whereConditions.idade = Between(minAge, maxAge);
-    }
+      }
 
       // Realiza a consulta
       const results = await this.candidateRepository.find({
