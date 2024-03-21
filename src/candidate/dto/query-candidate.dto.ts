@@ -13,7 +13,7 @@ export class QueryCandidateDto {
   vaga_internacional?: string;
   vaga_hibrida_betim?: string;
   home_office?: string;
-  genero: string;
+  genero?: string;
 
   uf?: string;
   conhecimento_ingles?: string;
