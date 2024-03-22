@@ -180,13 +180,6 @@ export class CandidateService {
         createCandidateDto.profissional,
       );
 
-      const currentDate = new Date();
-      const formattedDate = `${currentDate.getDate()}/${
-        currentDate.getMonth() + 1
-      }/${currentDate.getFullYear()}`;
-
-      const observacaoDate = `[${formattedDate}] - ${createCandidateDto.observacao}`;
-
       const file = curriculo
         ? await this.uploadCv(
             curriculo,
@@ -203,7 +196,6 @@ export class CandidateService {
         curriculo: file,
         idade: resultAge,
         codigoCandidate,
-        observacao: observacaoDate,
       });
 
       const candidate = await this.candidateRepository.save(tempCandidate);

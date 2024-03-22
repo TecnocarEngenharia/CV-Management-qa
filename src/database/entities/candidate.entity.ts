@@ -53,6 +53,9 @@ export class Candidate {
   @Column({ nullable: true, type: 'varchar' })
   resumoProfissional: string;
 
+  @Column({nullable: true , type: 'varchar'})
+  status: string;
+
   //  Page
 
   @Column({ nullable: false, type: 'varchar' })
