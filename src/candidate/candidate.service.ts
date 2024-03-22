@@ -303,6 +303,10 @@ export class CandidateService {
         whereConditions.genero = query.genero;
       }
 
+      if (query.status && typeof query.status === 'string') {
+        whereConditions.status = query.status;
+      }
+
       if (
         query.modalidade_atual &&
         typeof query.modalidade_atual === 'string'
