@@ -72,26 +72,7 @@ export class CandidateController {
 
   @Get('cpf')
   async findByCpf(@Query('cpf') cpf: string) {
-    try {
-      // Chama o método correspondente no serviço
-      const candidate = await this.candidateService.findByCpf(cpf);
-      if (!candidate) {
-        throw new NotFoundException(
-          'Candidato não encontrado para o CPF fornecido.',
-        );
-      }
-      return candidate;
-    } catch (error) {
-      // Lidar com erros
-      if (error instanceof HttpException) {
-        throw error;
-      } else {
-        throw new HttpException(
-          'Erro interno no servidor.',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-    }
+    return this.candidateService.findByCpf(cpf)
   }
 
   @Get(':id')
