@@ -40,8 +40,8 @@ export class User {
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
 
-  @Column({ type: 'boolean', default: false })
-  firstTime: boolean;
+  // @Column({ type: 'boolean', default: false })
+  // firstTime: boolean;
 
   @CreateDateColumn()
   createdAt: Date;
