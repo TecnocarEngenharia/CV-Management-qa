@@ -31,7 +31,7 @@ export class User {
   @Column({ nullable: false, type: 'varchar', unique: true, length: 64 })
   email: string;
 
-  @Column({ nullable: false, type: 'varchar'})
+  @Column({ nullable: false, type: 'varchar' })
   password: string;
 
   @Column({ type: 'enum', nullable: false, enum: RoleEnum })
@@ -39,6 +39,9 @@ export class User {
 
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
+
+  @Column({ type: 'boolean', default: false })
+  firstTime: boolean;
 
   @CreateDateColumn()
   createdAt: Date;
