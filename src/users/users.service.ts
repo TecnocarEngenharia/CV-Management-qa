@@ -57,7 +57,6 @@ export class UsersService {
         ],
       });
     } catch (error) {
-      console.log('error ', error);
       throw new Error('Erro ao buscar usuários');
     }
   }
@@ -68,6 +67,7 @@ export class UsersService {
       if (!user) {
         throw new NotFoundException(`Usuário com ID #${id} não encontrado`);
       }
+      delete user.password;
       return user;
     } catch (error) {
       throw new Error('Erro ao buscar usuário por ID');
@@ -80,7 +80,6 @@ export class UsersService {
       if (!user) {
         throw new NotFoundException(`Usuário com ID #${id} não encontrado`);
       }
-
       this.usersRepository.merge(user, updateUserDto);
       return await this.usersRepository.save(user);
     } catch (error) {

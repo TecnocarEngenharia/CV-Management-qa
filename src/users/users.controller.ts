@@ -24,7 +24,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  @Auth([RoleEnum.admin])
+  // @Auth([RoleEnum.admin])
   async findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }

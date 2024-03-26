@@ -35,7 +35,9 @@ export class AuthService {
 
   async login(payload: LoginDto) {
     try {
-      const user = await this.usersService.findByRegistration(payload.registration);
+      const user = await this.usersService.findByRegistration(
+        payload.registration,
+      );
 
       if (!user.isActive) {
         throw new HttpException('Usuario esta desativado', 400);
@@ -47,9 +49,7 @@ export class AuthService {
 
       const { id, name, email, password, role, isActive } = user;
 
-      const isPasswordValid = await bcrypt.compare(payload.password, password);
-
-      if (!isPasswordValid) {
+      if (payload.password !== password) {
         throw new HttpException('E-mail ou senha invalida.', 401);
       }
 
@@ -71,7 +71,6 @@ export class AuthService {
         token: await this.jwtService.signAsync(tokenPayload),
       };
     } catch (error) {
-      console.log("error login ", error)
       throw new HttpException(
         error.message || 'Internal server error',
         error.status || 500,

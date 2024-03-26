@@ -41,7 +41,6 @@ export class CandidateService {
           const uploadResults = await Promise.all(
             rows.map(async (row) => {
               try {
-                console.log('Row:', row);
                 const capitalizeStrings = (obj: Record<string, string>) => {
                   const newObj: Record<string, string> = {};
                   for (const key in obj) {
@@ -202,7 +201,6 @@ export class CandidateService {
 
       return candidate;
     } catch (error) {
-      console.log(error.message);
       throw new HttpException(
         error.message || 'Erro interno no servidor',
         error.statusCode || 500,
@@ -287,10 +285,7 @@ export class CandidateService {
         query.tipo_desejado_linkedin &&
         typeof query.tipo_desejado_linkedin === 'string'
       ) {
-        console.log(
-          "Parâmetro 'tipo_desejado_linkedin' recebido:",
-          query.tipo_desejado_linkedin,
-        );
+    
 
         // Construa a consulta para filtrar candidatos que contenham o valor desejado no array JSONB
         whereConditions.tipo_desejado_linkedin = Raw(
